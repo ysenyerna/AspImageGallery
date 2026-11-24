@@ -6,7 +6,8 @@ public class UploadModel : PageModel
 {
 	// Set the max file size (2 MB)
 	private readonly int maxFileSize = 2 * 1024 * 1024;
-	private readonly string imagesDirectory;
+	private readonly string rootPath;
+	private readonly string imagesDirectory = "uploads";
 
 	// Image properties
 	[BindProperty]
@@ -18,8 +19,8 @@ public class UploadModel : PageModel
 
 	public UploadModel(IWebHostEnvironment env)
 	{
-		imagesDirectory = Path.Combine(env.WebRootPath, "uploads");
-		Directory.CreateDirectory(imagesDirectory);
+		rootPath = env.WebRootPath;
+		Directory.CreateDirectory(Path.Combine(rootPath + imagesDirectory));
 	}
 
 	public IActionResult OnPost()
@@ -44,7 +45,7 @@ public class UploadModel : PageModel
 		}
 		// Check whether the file is PNG or JPG (note, this only checks extension, not MIME type)
 		var ext = Path.GetExtension(Image.FileName);
-		if (ext != ".png" && ext != "jpg")
+		if (ext != ".png" && ext != ".jpg")
 		{
 			Message = "Only .jpg and .png files are accepted.";
 			return Page();
@@ -52,9 +53,12 @@ public class UploadModel : PageModel
 
 		// Upload the image file to the root directory
 		var filePath = Path.Combine(imagesDirectory, Title + ext);
-		using var stream = System.IO.File.Create(filePath);
+		using var stream = System.IO.File.Create(Path.Combine(rootPath, filePath));
 		Image.CopyTo(stream);
 
+		// Add image record to JSON file
+		var img = new ImageRecord() {Title = Title, FilePath = filePath};
+		JsonHandler.AddImage(img);
 		
 		Message = "Image uploaded successfully.";
 		return Page();

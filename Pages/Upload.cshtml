@@ -10,6 +10,9 @@
 
 <!-- File upload form -->
 <form method="post" enctype="multipart/form-data">
+	<!-- Add anti-forgery token -->
+	@Html.AntiForgeryToken()
+
 	<div class="form-item">
 		<label asp-for="Title"></label>
 		<input asp-for="Title"/>

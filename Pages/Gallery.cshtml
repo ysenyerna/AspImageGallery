@@ -1,4 +1,5 @@
 @page
+@model GalleryModel
 @{
     ViewData["Title"] = "Gallery";
 }
@@ -6,3 +7,11 @@
 <div class="text-center">
     <h1 class="display-4">Image Gallery</h1>
 </div>
+
+@foreach (ImageRecord image in Model.Images)
+{
+	<div>
+		<h3>@image.Title</h3>
+		<img src="@image.FilePath" alt="@image.Title" />
+	</div>
+}
