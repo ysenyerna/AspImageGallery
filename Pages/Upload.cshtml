@@ -1,0 +1,30 @@
+@page
+@model UploadModel
+@{
+	ViewData["Title"] = "Upload an Image";
+}
+
+<div class="text-center">
+	<h1 class="display-4">Upload an Image</h1>
+</div>
+
+<!-- File upload form -->
+<form method="post" enctype="multipart/form-data">
+	<div class="form-item">
+		<label asp-for="Title"></label>
+		<input asp-for="Title"/>
+	</div>
+
+	<div class="form-item">
+		<label asp-for="Image">Image (.jpg or .png; under 2 MB)</label>
+		<input asp-for="Image" type="file" accept=".jpg,.png,image/jpeg,image/png" />
+	</div>
+
+	<button type="submit">Upload</button>
+</form>
+
+<!-- Display an error message -->
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+	<p role="status">@Model.Message</p>
+}
